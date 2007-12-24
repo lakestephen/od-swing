@@ -1,0 +1,20 @@
+<!-- edited with XMLSPY v2004 rel. 4 U (http://www.xmlspy.com) by Nick Ebbutt (Object Definitions Ltd.) -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<parent>
+		<groupId>od</groupId>
+		<artifactId>od-parent</artifactId>
+		<version>2.1-SNAPSHOT</version>
+	</parent>
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>od</groupId>
+	<artifactId>od-swing</artifactId>
+	<name>od-swing</name>
+	<description>OD Swing Utilities</description>
+	<packaging>jar</packaging>
+	<version>1.0-SNAPSHOT</version>
+	<build>
+		<sourceDirectory>src/java</sourceDirectory>
+		<testSourceDirectory>src/test</testSourceDirectory>
+		<testOutputDirectory>target/test-classes</testOutputDirectory>
+	</build>
+</project>
