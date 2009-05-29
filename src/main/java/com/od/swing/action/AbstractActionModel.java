@@ -1,4 +1,4 @@
-package com.od.upcrypt.util.actionmodel;
+package com.od.swing.action;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,12 +9,9 @@ import java.util.List;
  *         Superclass for action models
  */
 public abstract class AbstractActionModel {
+
     private boolean modelIsValid;
 
-    /**
-     * List of WeakReferences to ActionModelListeners. This ensures the ActionModelListeners
-     * can be garbage colleted when all other references are lost.
-     */
     private List<ActionModelListener> actionModelListeners = new ArrayList<ActionModelListener>();
 
     public synchronized void addActionModelListener(ActionModelListener a) {

@@ -1,23 +1,24 @@
-package com.od.upcrypt.util.actionmodel;
+package com.od.swing.action;
 
 import javax.swing.*;
 
 /**
  * @author EbbuttN
  */
-public abstract class ModelDrivenAction extends AbstractAction implements ActionModelListener {
-    private AbstractActionModel actionModel;
+public abstract class ModelDrivenAction<E extends AbstractActionModel> extends AbstractAction implements ActionModelListener {
 
-    public ModelDrivenAction(AbstractActionModel actionModel, String name, ImageIcon imageIcon) {
+    private E actionModel;
+
+    public ModelDrivenAction(E actionModel, String name, ImageIcon imageIcon) {
         super(name, imageIcon);
         intialize(actionModel);
     }
 
-    public ModelDrivenAction(AbstractActionModel actionModel) {
+    public ModelDrivenAction(E actionModel) {
         intialize(actionModel);
     }
 
-    private void intialize(AbstractActionModel actionModel) {
+    private void intialize(E actionModel) {
         this.actionModel = actionModel;
         actionModel.addActionModelListener(this);
         setEnabled(false);
@@ -37,6 +38,10 @@ public abstract class ModelDrivenAction extends AbstractAction implements Action
         setEnabled(actionModel.isModelValid() &&
                 isPermitted() &&
                 isModelStateActionable());
+    }
+
+    public E getActionModel() {
+        return actionModel;
     }
 
     protected boolean isPermitted() {

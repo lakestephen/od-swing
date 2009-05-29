@@ -1,4 +1,4 @@
-package com.od.upcrypt.util.actionmodel;
+package com.od.swing.action;
 
 /**
  * Copyright (c) Object Definitions Ltd.
