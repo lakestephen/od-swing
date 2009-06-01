@@ -12,4 +12,15 @@
 	<description>OD Swing Utilities</description>
 	<packaging>jar</packaging>
 	<version>1.1-SNAPSHOT</version>
+    <build>
+    <plugins>
+        <plugin>
+            <groupId>com.google.code.maven-license-plugin</groupId>
+            <artifactId>maven-license-plugin</artifactId>
+            <configuration>
+                <header>src/etc/header.txt</header>
+            </configuration>
+        </plugin>
+    </plugins>
+    </build>
 </project>
