@@ -1,4 +1,4 @@
-Copyright (C) ${year} Nick Ebbutt (nick@objectdefinitions.com)
+Copyright (C) ${year} (nick @ objectdefinitions.com)
 
 This file is part of JTimeseries.
 
