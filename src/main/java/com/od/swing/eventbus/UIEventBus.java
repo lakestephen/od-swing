@@ -41,7 +41,7 @@ public class UIEventBus {
         UIUtilities.runInDispatchThread(
             new Runnable() {
                 public void run() {
-                    List listeners = listenerClassToListeners.get(listenerClass);
+                    List listeners = getListenerList(listenerClass);
                     LinkedList snapshot = new LinkedList(listeners);
                     for (Object o : snapshot) {
                         try {
