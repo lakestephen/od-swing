@@ -8,6 +8,7 @@ import java.lang.reflect.Proxy;
 import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -55,7 +56,20 @@ public class WeakReferenceListener {
     private static volatile int CLEANUP_PERIOD_SECONDS = 30;
     
     private static final Object cleanupLock = new Object();
-    private static final ScheduledExecutorService s = Executors.newSingleThreadScheduledExecutor();
+    private static final ScheduledExecutorService s = createWeakReferenceCleanupExecutor();
+
+    private static ScheduledExecutorService createWeakReferenceCleanupExecutor() {
+        return Executors.newSingleThreadScheduledExecutor(
+            new ThreadFactory() {
+                public Thread newThread(Runnable r) {
+                    Thread t = new Thread(r, "WeakReferenceListener-Cleanup");
+                    t.setDaemon(true);
+                    return t;
+                }
+            }
+        );
+    }
+
     private static boolean cleanupRunning;
 
     //all the weak reference listeners, we check these periodically to see if we can
