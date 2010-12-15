@@ -18,6 +18,8 @@
  */
 package com.od.swing.progress;
 
+import com.od.swing.util.ImageIconCache;
+
 import javax.swing.*;
 import javax.swing.event.AncestorEvent;
 import javax.swing.event.AncestorListener;
@@ -53,16 +55,26 @@ public class IconComponentAnimator implements AncestorListener {
 
     public IconComponentAnimator(IconComponent iconComponent, String imageResourcePrefix, String imageResourceSuffix,
                           int numImages, int startIndex, int delayBetweenFrames, int pauseBetweenAnimations, boolean runOnce) {
+        this(iconComponent, imageResourcePrefix, imageResourceSuffix, numImages, startIndex, delayBetweenFrames, pauseBetweenAnimations, runOnce, -1, -1);
+    }
+
+    public IconComponentAnimator(IconComponent iconComponent, String imageResourcePrefix, String imageResourceSuffix,
+                          int numImages, int startIndex, int delayBetweenFrames, int pauseBetweenAnimations, boolean runOnce, int iconWidth, int iconHeight) {
 
         icons = new ImageIcon[numImages];
         for (int i = 0; i < numImages; i++) {
-            icons[i] = new ImageIcon(IconComponentAnimator.class.getResource(
-                    imageResourcePrefix + (i + startIndex) + imageResourceSuffix));
+            icons[i] = getOrCreateImageIcon(imageResourcePrefix, imageResourceSuffix, startIndex, i, iconWidth, iconHeight);
         }
         this.delayBetweenFrames = delayBetweenFrames;
         this.pauseBetween = pauseBetweenAnimations;
         this.runOnce = runOnce;
         setAnimatedComponent(iconComponent);
+    }
+
+    private ImageIcon getOrCreateImageIcon(String imageResourcePrefix, String imageResourceSuffix, int startIndex, int i, int width, int height) {
+        return width < 0 || height < 0 ?
+                ImageIconCache.getImageIcon(imageResourcePrefix + (i + startIndex) + imageResourceSuffix) :
+                ImageIconCache.getImageIcon(imageResourcePrefix + (i + startIndex) + imageResourceSuffix, width, height);
     }
 
     private void setAnimatedComponent(IconComponent component) {

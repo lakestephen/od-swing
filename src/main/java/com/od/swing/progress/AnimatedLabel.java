@@ -29,11 +29,17 @@ import javax.swing.*;
 public class AnimatedLabel extends JLabel implements IconComponentAnimator.IconComponent {
     private IconComponentAnimator iconComponentAnimator;
 
-
     public AnimatedLabel(
             String imageResourcePrefix, String imageResourceSuffix,
             int numImages, int startIndex,
             int delay, int pauseBetweenAnimations, boolean runOnce) {
+        this(imageResourcePrefix, imageResourceSuffix, numImages, startIndex, delay, pauseBetweenAnimations, runOnce, -1, -1);    
+    }
+
+    public AnimatedLabel(
+            String imageResourcePrefix, String imageResourceSuffix,
+            int numImages, int startIndex,
+            int delay, int pauseBetweenAnimations, boolean runOnce, int width, int height) {
 
         iconComponentAnimator = new IconComponentAnimator(
                 this,
@@ -43,7 +49,9 @@ public class AnimatedLabel extends JLabel implements IconComponentAnimator.IconC
                 startIndex,
                 delay,
                 pauseBetweenAnimations,
-                runOnce);
+                runOnce,
+                width,
+                height);
     }
 
      /**

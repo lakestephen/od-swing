@@ -37,6 +37,8 @@ public class ProgressLayeredPane extends JLayeredPane implements ProgressIndicat
     private ProgressPanel progressPanel;
     private Component viewComponent;
     private float alphaTransparency;
+    private int iconWidthAndHeight;
+    private int fontSize;
 
     public ProgressLayeredPane() {
         this(null, DEFAULT_ALPHA_TRANSPARENCY);
@@ -46,7 +48,17 @@ public class ProgressLayeredPane extends JLayeredPane implements ProgressIndicat
         this(viewComponent, DEFAULT_ALPHA_TRANSPARENCY);
     }
 
+    public ProgressLayeredPane(Component viewComponent, int iconWidthAndHeight, int fontSize) {
+        this(viewComponent, DEFAULT_ALPHA_TRANSPARENCY, iconWidthAndHeight, fontSize);
+    }
+
     public ProgressLayeredPane(Component viewComponent, float alphaTransparency) {
+        this(viewComponent, alphaTransparency, -1, 12);
+    }
+
+    public ProgressLayeredPane(Component viewComponent, float alphaTransparency, int iconWidthAndHeight, int fontSize) {
+        this.iconWidthAndHeight = iconWidthAndHeight;
+        this.fontSize = fontSize;
         setLayout(new AllComponentsFillContainerLayout());
         this.alphaTransparency = alphaTransparency;
         if ( viewComponent != null ) {
@@ -131,7 +143,7 @@ public class ProgressLayeredPane extends JLayeredPane implements ProgressIndicat
 
     class ProgressPanel extends JPanel {
 
-        private AnimatedLabel animatedLabel = new AnimatedLabel("/progressAnimation/loading", ".gif", 18, 1, 200, 0, false);
+        private AnimatedLabel animatedLabel = new AnimatedLabel("/progressAnimation/loading", ".gif", 18, 1, 200, 0, false, iconWidthAndHeight, iconWidthAndHeight);
         private JProgressBar progressBar = new JProgressBar();
         private JLabel progressLabel = new JLabel();
         private final Color labelForeground = new Color(4,22,68,255);
@@ -153,11 +165,14 @@ public class ProgressLayeredPane extends JLayeredPane implements ProgressIndicat
 
         private JComponent getComponentPanel(String message) {
             JLabel messageLabel = new JLabel(message);
-            messageLabel.setFont(messageLabel.getFont().deriveFont(16f));
+            messageLabel.setFont(messageLabel.getFont().deriveFont((float)fontSize));
             messageLabel.setForeground(labelForeground);
 
             progressBar.setVisible(false);
-            progressBar.setSize(new Dimension(300, 40));
+            progressBar.setSize(new Dimension(
+                Math.min(300, viewComponent.getSize().width - 30),
+                Math.min(40, viewComponent.getSize().height - 10))
+            );
             progressBar.setForeground(new Color(193,234,250,100));
 
             progressLabel.setVisible(false);
@@ -166,9 +181,9 @@ public class ProgressLayeredPane extends JLayeredPane implements ProgressIndicat
             Box componentPanel = Box.createVerticalBox();
             componentPanel.setOpaque(false);
             componentPanel.add(getCenteredBox(messageLabel));
-            componentPanel.add(Box.createVerticalStrut(20));
+            componentPanel.add(Box.createVerticalStrut(15));
             componentPanel.add(getCenteredBox(animatedLabel));
-            componentPanel.add(Box.createVerticalStrut(50));
+            componentPanel.add(Box.createVerticalGlue());
             componentPanel.add(getCenteredBox(progressBar));
             componentPanel.add(Box.createVerticalStrut(5));
             componentPanel.add(getCenteredBox(progressLabel));
