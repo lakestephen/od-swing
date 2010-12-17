@@ -136,7 +136,7 @@ public class WeakReferenceListener {
         return delegateListener.get() == null;
     }
 
-    public boolean addListenerTo(Object targetObservable) {
+    public void addListenerTo(Object targetObservable) {
 
         Object proxyListener = getOrCreateProxyListener();
 
@@ -159,9 +159,9 @@ public class WeakReferenceListener {
 
         if ( success ) {
             addForCleanup(targetObservable);
+        }  else {
+            throw new WeakReferenceListenerException("Failed to add WeakReferenceListener to " + targetObservable);
         }
-
-        return success;
     }
 
     private void addForCleanup(Object targetObservable) {
@@ -178,7 +178,7 @@ public class WeakReferenceListener {
         checkCleanupThreadStarted();
     }
 
-    public boolean removeListenerFrom(Object targetObservable) {
+    public void removeListenerFrom(Object targetObservable) {
 
         boolean success = false;
 
@@ -201,10 +201,10 @@ public class WeakReferenceListener {
 
             if ( success ) {
                 removeFromCleanup(targetObservable);
+            }  else {
+                throw new WeakReferenceListenerException("Failed to remove WeakReferenceListener from " + targetObservable);
             }
         }
-
-        return success;
     }
 
     private void removeFromCleanup(Object targetObservable) {
@@ -218,14 +218,10 @@ public class WeakReferenceListener {
                 }
             }
 
-            removeFromCleanupIfNoTargetObservables();
-        }
-    }
-
-    private void removeFromCleanupIfNoTargetObservables() {
-        if ( targetObservables.size() == 0 ) {
-            if (DEBUG_LOGGING) logDebug("No more targetObservables, remove weak reference listener " + this);
-            listeners.remove(this);
+            if ( targetObservables.size() == 0 ) {
+                if (DEBUG_LOGGING) logDebug("No more targetObservables, remove weak reference listener " + this);
+                listeners.remove(this);
+            }
         }
     }
 
@@ -352,6 +348,12 @@ public class WeakReferenceListener {
 
     private void logDebug(String s) {
         System.out.println("WeakReferenceListener: " + s);
+    }
+
+    private class WeakReferenceListenerException extends RuntimeException {
+        private WeakReferenceListenerException(String message) {
+            super(message);
+        }
     }
 
 }
