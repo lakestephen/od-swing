@@ -19,6 +19,7 @@
 package com.od.swing.progress;
 
 import javax.swing.*;
+import java.awt.*;
 
 
 /**
@@ -52,6 +53,10 @@ public class AnimatedLabel extends JLabel implements IconComponentAnimator.IconC
                 runOnce,
                 width,
                 height);
+    }
+
+    public void setBackgroundImage(String resource, float alpha) {
+        iconComponentAnimator.setBackgroundImage(resource, alpha);
     }
 
      /**

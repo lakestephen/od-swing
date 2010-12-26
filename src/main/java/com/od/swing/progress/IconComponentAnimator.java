@@ -23,6 +23,8 @@ import com.od.swing.util.ImageIconCache;
 import javax.swing.*;
 import javax.swing.event.AncestorEvent;
 import javax.swing.event.AncestorListener;
+import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 
@@ -107,6 +109,26 @@ public class IconComponentAnimator implements AncestorListener {
                 isAnimationOn = false;
                 animatorThread.stopAnimation();
             }
+        }
+    }
+
+    public void setBackgroundImage(String resourcePath, float alpha) {
+        for ( ImageIcon i : icons) {
+
+            BufferedImage newImage = new BufferedImage(
+                i.getIconWidth(),
+                i.getIconHeight(),
+                BufferedImage.TYPE_4BYTE_ABGR
+            );
+            Graphics graphics = newImage.getGraphics();
+
+            ImageIcon backgroundImage = ImageIconCache.getImageIcon(resourcePath, i.getIconWidth(), i.getIconHeight());
+            graphics.drawImage(backgroundImage.getImage(), 0, 0, null);
+
+            ((Graphics2D)graphics).setComposite(AlphaComposite.getInstance(AlphaComposite.XOR, alpha));
+            Image fore = i.getImage();
+            graphics.drawImage(fore, 0, 0, null);
+            i.setImage(newImage);
         }
     }
 

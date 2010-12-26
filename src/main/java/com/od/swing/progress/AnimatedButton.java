@@ -51,6 +51,10 @@ public class AnimatedButton extends JButton implements IconComponentAnimator.Ico
         );
     }
 
+    public void setBackgroundImage(String resource, float alpha) {
+        iconComponentAnimator.setBackgroundImage(resource, alpha);
+    }
+
     /**
      * To guarantee cleanup client class can call this dispose method, if paranoid
      */
