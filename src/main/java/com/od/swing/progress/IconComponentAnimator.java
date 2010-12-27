@@ -60,6 +60,11 @@ public class IconComponentAnimator implements AncestorListener {
         this(iconComponent, imageResourcePrefix, imageResourceSuffix, numImages, startIndex, delayBetweenFrames, pauseBetweenAnimations, runOnce, -1, -1);
     }
 
+    public IconComponentAnimator(String imageResourcePrefix, String imageResourceSuffix,
+                          int numImages, int startIndex, int delayBetweenFrames, int pauseBetweenAnimations, boolean runOnce, int iconWidth, int iconHeight) {
+        this(new IconComponentAdapter(), imageResourcePrefix, imageResourceSuffix, numImages, startIndex, delayBetweenFrames, pauseBetweenAnimations, runOnce, iconWidth, iconHeight);
+    }
+
     public IconComponentAnimator(IconComponent iconComponent, String imageResourcePrefix, String imageResourceSuffix,
                           int numImages, int startIndex, int delayBetweenFrames, int pauseBetweenAnimations, boolean runOnce, int iconWidth, int iconHeight) {
 
@@ -79,7 +84,10 @@ public class IconComponentAnimator implements AncestorListener {
                 ImageIconCache.getImageIcon(imageResourcePrefix + (i + startIndex) + imageResourceSuffix, width, height);
     }
 
-    private void setAnimatedComponent(IconComponent component) {
+    public void setAnimatedComponent(IconComponent component) {
+        if ( iconComponent != null ) {
+            iconComponent.removeAncestorListener(this);
+        }
         iconComponent = component;
         iconComponent.setIcon(icons[0]);
         iconComponent.addAncestorListener(this);
@@ -215,6 +223,16 @@ public class IconComponentAnimator implements AncestorListener {
         void addAncestorListener(AncestorListener l);
 
         void removeAncestorListener(AncestorListener l);
+    }
+
+
+    private static class IconComponentAdapter implements IconComponent {
+
+        public void setIcon(Icon i) {}
+
+        public void addAncestorListener(AncestorListener l) {}
+
+        public void removeAncestorListener(AncestorListener l) {}
     }
 
 }
