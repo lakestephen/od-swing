@@ -40,7 +40,7 @@ public class AnimatedIconTree extends JTree {
         super.setModel(m);
     }
 
-    private void initializeAnimators(TreeModel treeModel) {
+    protected void initializeAnimators(TreeModel treeModel) {
         disposeAnimatorWrappers();
         animatorWrappers = new HashSet<AnimatorWrapper>();
         treeModel.addTreeModelListener(modelListener);
@@ -101,7 +101,7 @@ public class AnimatedIconTree extends JTree {
         public void treeNodesInserted(TreeModelEvent e) {
             for (Object child : e.getChildren()) {
                 if ( child instanceof ProgressTreeNode) {
-                    AnimatorWrapper w = findAnimatorWrapper((ProgressTreeNode)child);
+                    AnimatorWrapper w = findOrCreateWrapper((ProgressTreeNode)child);
                     w.addProgressNode((ProgressTreeNode)child);
                 }
             }
