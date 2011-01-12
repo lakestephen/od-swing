@@ -60,7 +60,10 @@ public abstract class AbstractActionModel {
 
     /**
      * Set whether actions based on this model should be enabled
-     * Triggers an event to the Actions which are listners on this model
+     * Triggers an event to the Actions which are listners on this model, the actions may
+     * implement other logic to determine whether the action is 'actionable' and enabled,
+     * even if the model is valid, so the event needs to get fired even if the validity
+     * of the model hasn't changed
      *
      * @param valid
      */
