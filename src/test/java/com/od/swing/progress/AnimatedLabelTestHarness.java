@@ -9,7 +9,7 @@ import javax.swing.*;
  * Time: 11:59
  * To change this template use File | Settings | File Templates.
  */
-public class TestAnimatedLabel {
+public class AnimatedLabelTestHarness {
 
     private static final int IMAGE_SIZE = 32;
 
