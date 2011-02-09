@@ -15,20 +15,12 @@ import java.beans.PropertyChangeSupport;
 public class ProxyingPropertyChangeListener implements PropertyChangeListener {
 
     private PropertyChangeSupport support;
-    private Object source;
-    private String propertyName;
 
-    public ProxyingPropertyChangeListener(String propertyName, PropertyChangeSupport support, Object source) {
-        this.propertyName = propertyName;
+    public ProxyingPropertyChangeListener(PropertyChangeSupport support) {
         this.support = support;
-        this.source = source;
-    }
-
-    public ProxyingPropertyChangeListener(String propertyName) {
-        this.propertyName = propertyName;
     }
 
     public void propertyChange(PropertyChangeEvent evt) {
-        support.firePropertyChange(propertyName, evt.getOldValue(), evt.getNewValue());
+        support.firePropertyChange(evt.getPropertyName(), evt.getOldValue(), evt.getNewValue());
     }
 }

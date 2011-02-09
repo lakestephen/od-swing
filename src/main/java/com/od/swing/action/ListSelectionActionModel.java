@@ -18,10 +18,7 @@
  */
 package com.od.swing.action;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -31,36 +28,48 @@ import java.util.List;
  */
 public class ListSelectionActionModel<E> extends AbstractActionModel {
 
-    private List<E> selectedSeries = new LinkedList<E>();
+    private LinkedHashSet<E> selectedSeries = new LinkedHashSet<E>();
+    private List<E> selectedAsList;
 
     public void setSelected(E... series) {
         setSelected(Arrays.asList(series));
     }
 
     public void setSelected(List<E> series) {
+        selectedAsList = Collections.unmodifiableList(series);
         selectedSeries.clear();
         selectedSeries.addAll(series);
         setValidity();
     }
 
     public void addSelected(E series) {
+        selectedAsList = null;
         selectedSeries.add(series);
         setValidity();
     }
 
     public void removeSelected(E series) {
+        selectedAsList = null;
         selectedSeries.remove(series);
         setValidity();
     }
 
     public void setSelected(E series){
+        selectedAsList = null;
         selectedSeries.clear();
         selectedSeries.add(series);
         setValidity();
     }
 
     public List<E> getSelected() {
-        return Collections.unmodifiableList(selectedSeries);
+        return getSelectedAsList();
+    }
+
+    private List<E> getSelectedAsList() {
+        if ( selectedAsList == null) {
+            selectedAsList = Collections.unmodifiableList(new ArrayList<E>(selectedSeries));
+        }
+        return selectedAsList;
     }
 
     private void setValidity() {
@@ -68,6 +77,7 @@ public class ListSelectionActionModel<E> extends AbstractActionModel {
     }
 
     protected void doClearActionModelState() {
+        selectedAsList = null;
         selectedSeries.clear();
     }
 }
