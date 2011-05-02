@@ -35,7 +35,7 @@ public class ListSelectionActionModel<E> extends AbstractActionModel {
         setSelected(Arrays.asList(series));
     }
 
-    public void setSelected(List<E> series) {
+    public void setSelected(List<? extends E> series) {
         selectedAsList = Collections.unmodifiableList(series);
         selectedSeries.clear();
         selectedSeries.addAll(series);
