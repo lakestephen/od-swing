@@ -143,17 +143,16 @@ public class WeakReferenceListener {
         //now find a method to add proxyListener to the observable
         boolean success = false;
         Method[] methods = targetObservable.getClass().getMethods();
-        for ( Method m : methods ) {
-            if (m.getName().startsWith("add") && hasRequiredParameters(m)) {
-                try {
-                    Object[] args = getParameters(proxyListener);
-                    if (DEBUG_LOGGING) logDebug("Will use add method " + m);
-                    m.invoke(targetObservable, args);
-                    success = true;
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                break;
+        Method chosenMethod = findMatchingMethod("add", methods);
+
+        if ( chosenMethod != null) {
+            try {
+                Object[] args = getParameters(proxyListener);
+                if (DEBUG_LOGGING) logDebug("Will use add method " + chosenMethod);
+                chosenMethod.invoke(targetObservable, args);
+                success = true;
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
 
@@ -185,17 +184,16 @@ public class WeakReferenceListener {
         //now find a method to remove proxyListener from the observable
         if ( proxyListener != null ) {
             Method[] methods = targetObservable.getClass().getMethods();
-            for ( Method m : methods ) {
-                if ( m.getName().startsWith("remove") && hasRequiredParameters(m)) {
-                    try {
-                        Object[] args = getParameters(proxyListener);
-                        if (DEBUG_LOGGING) logDebug("Will use remove method " + m);
-                        m.invoke(targetObservable, args);
-                        success = true;
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                    break;
+            Method chosenMethod = findMatchingMethod("remove", methods);
+
+            if ( chosenMethod != null) {
+                try {
+                    Object[] args = getParameters(proxyListener);
+                    if (DEBUG_LOGGING) logDebug("Will use remove method " + chosenMethod);
+                    chosenMethod.invoke(targetObservable, args);
+                    success = true;
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
 
@@ -205,6 +203,28 @@ public class WeakReferenceListener {
                 throw new WeakReferenceListenerException("Failed to remove WeakReferenceListener from " + targetObservable);
             }
         }
+    }
+
+    private Method findMatchingMethod(String startText, Method[] methods) {
+        Method chosenMethod = null;
+        //first try to find a method with a parameter which exactly matches the class of listener to add
+        for ( Method m : methods ) {
+            if ( m.getName().startsWith(startText) && hasRequiredParameters(m, true)) {
+                chosenMethod = m;
+                break;
+            }
+        }
+
+        //first try to find a method with a parameter which is assignable from the class of listener to add
+        if ( chosenMethod == null) {
+                for ( Method m : methods ) {
+                if ( m.getName().startsWith(startText) && hasRequiredParameters(m, false)) {
+                    chosenMethod = m;
+                    break;
+                }
+            }
+        }
+        return chosenMethod;
     }
 
     private void removeFromCleanup(Object targetObservable) {
@@ -228,22 +248,31 @@ public class WeakReferenceListener {
     //check an add or remove listener method has the right parameters
     //if we are not using an extra argument, this means the only argument is a listener interface which is implemented by proxylistener
     //if we are using an extra first argument, check the class for that is also valid
-    private boolean hasRequiredParameters(Method m) {
+    private boolean hasRequiredParameters(Method m, boolean exactMatchForListenerInterface) {
         boolean result = false;
         int expectedParameterCount = isUseExtraParameterForListenerMethods() ? 2 : 1;
         Class[] parameterClasses = m.getParameterTypes();
         if ( parameterClasses.length == expectedParameterCount ) {
-            result = checkParameters(parameterClasses[expectedParameterCount - 1], parameterClasses);
+            result = checkParameters(parameterClasses[expectedParameterCount - 1], parameterClasses, exactMatchForListenerInterface);
         }
         return result;
     }
 
-    private boolean checkParameters(Class parameterClass, Class[] parameterClasses) {
+    private boolean checkParameters(Class parameterClass, Class[] parameterClasses, boolean exactMatch) {
         boolean result = true;
         if ( isUseExtraParameterForListenerMethods() ) {
             result = parameterClasses[0].isAssignableFrom(firstAddAndRemoveArgument.getClass());
         }
-        result &= listenerClassInterfaces.contains(parameterClass);
+        if ( exactMatch) {
+            result &= listenerClassInterfaces.contains(parameterClass);
+        } else {
+            for ( Class c : listenerClassInterfaces ) {
+                if ( c.isAssignableFrom(parameterClass)) {
+                    result = true;
+                    break;
+                }
+            }
+        }
         return result;
     }
 
