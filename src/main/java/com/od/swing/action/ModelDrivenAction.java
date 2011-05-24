@@ -18,6 +18,8 @@
  */
 package com.od.swing.action;
 
+import com.od.swing.weakreferencelistener.WeakReferenceListener;
+
 import javax.swing.*;
 
 /**
@@ -26,6 +28,7 @@ import javax.swing.*;
 public abstract class ModelDrivenAction<E extends AbstractActionModel> extends AbstractAction implements ActionModelListener {
 
     private E actionModel;
+    private WeakReferenceListener weakReferenceListener;
 
     public ModelDrivenAction(E actionModel, String name, ImageIcon imageIcon) {
         super(name, imageIcon);
@@ -38,7 +41,8 @@ public abstract class ModelDrivenAction<E extends AbstractActionModel> extends A
 
     private void intialize(E actionModel) {
         this.actionModel = actionModel;
-        actionModel.addActionModelListener(this);
+        weakReferenceListener = new WeakReferenceListener(this);
+        weakReferenceListener.addListenerTo(actionModel);
         setEnabled(false);
     }
 
@@ -48,7 +52,7 @@ public abstract class ModelDrivenAction<E extends AbstractActionModel> extends A
     }
 
     public void dispose() {
-        actionModel.removeActionModelListener(this);
+        weakReferenceListener.removeListenerFrom(actionModel);
         actionModel = null;
     }
 
