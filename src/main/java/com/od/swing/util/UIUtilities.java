@@ -18,6 +18,7 @@
  */
 package com.od.swing.util;
 
+import javax.swing.*;
 import java.awt.*;
 
 /**
@@ -34,5 +35,9 @@ public class UIUtilities {
         } else {
             EventQueue.invokeLater(addToGui);
         }
+    }
+
+    public static Window getWindowForComponentOrWindow(Component parent) {
+        return parent instanceof Window ? (Window)parent : SwingUtilities.windowForComponent(parent);
     }
 }
