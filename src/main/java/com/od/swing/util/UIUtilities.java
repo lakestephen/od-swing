@@ -20,6 +20,7 @@ package com.od.swing.util;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.Date;
 
 /**
  * Created by IntelliJ IDEA.
@@ -39,5 +40,12 @@ public class UIUtilities {
 
     public static Window getWindowForComponentOrWindow(Component parent) {
         return parent instanceof Window ? (Window)parent : SwingUtilities.windowForComponent(parent);
+    }
+
+    /**
+     * equals which checks for null
+     */
+    public static boolean equals(Object o1, Object o2) {
+        return o1 == null ? o2 == null : o1.equals(o2);
     }
 }
