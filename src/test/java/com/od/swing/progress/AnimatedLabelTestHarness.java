@@ -19,11 +19,24 @@ public class AnimatedLabelTestHarness {
                     public void run() {
                         JFrame f = new JFrame();
 
-                        AnimatedLabel l = new AnimatedLabel(
-                            "/progressAnimation/loading", ".gif",
-                            18, 1, 200, 0, false,
+                        SuffixedImageFileSource i = new SuffixedImageFileSource(
+                            "/progressAnimation/loading",
+                            ".gif",
+                            18,
+                            1,
                             IMAGE_SIZE,
                             IMAGE_SIZE
+                        );
+
+//                        RotatingImageSource i = new RotatingImageSource(
+//                            "/progressAnimation/loading1.gif",
+//                            18,
+//                            IMAGE_SIZE,
+//                            IMAGE_SIZE
+//                        );
+
+                        AnimatedLabel l = new AnimatedLabel(
+                            i, 200, 0, false
                         );
                         l.setBackgroundImage("/hard_drive_network_warning.png", 0.75f);
                         l.runAnimations();

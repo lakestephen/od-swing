@@ -27,27 +27,15 @@ public class AnimatedButton extends JButton implements IconComponentAnimator.Ico
 
     private IconComponentAnimator iconComponentAnimator;
 
-    public AnimatedButton(Action action, String imageResourcePrefix, String imageResourceSuffix,
-            int numImages, int startIndex,
-            int delay, int pauseBetweenAnimations, boolean runOnce) {
-        this(action, imageResourcePrefix, imageResourceSuffix, numImages, startIndex, delay, pauseBetweenAnimations, runOnce, -1, -1);
-    }
-
-    public AnimatedButton(Action action, String imageResourcePrefix, String imageResourceSuffix,
-                          int numImages, int startIndex, int delay, int pauseBetweenAnimations, boolean runOnce, int width, int height) {
+    public AnimatedButton(Action action, ImageIconSource iconSource, int delay, int pauseBetweenAnimations, boolean runOnce) {
         super(action);
 
         iconComponentAnimator = new IconComponentAnimator(
                 this,
-                imageResourcePrefix,
-                imageResourceSuffix,
-                numImages,
-                startIndex,
+                iconSource,
                 delay,
                 pauseBetweenAnimations,
-                runOnce,
-                width,
-                height
+                runOnce
         );
     }
 

@@ -39,6 +39,7 @@ public class ProgressLayeredPane extends JLayeredPane implements ProgressIndicat
     private float alphaTransparency;
     private int iconWidthAndHeight;
     private int fontSize;
+    private ImageIconSource iconSource;
 
     public ProgressLayeredPane() {
         this(null, DEFAULT_ALPHA_TRANSPARENCY);
@@ -64,6 +65,14 @@ public class ProgressLayeredPane extends JLayeredPane implements ProgressIndicat
         if ( viewComponent != null ) {
             setViewComponent(viewComponent);
         }
+    }
+
+    /**
+     * Set the ImageIconSource for the icons used in the animation, must be set before
+     * the animation is first started
+     */
+    public void setIconSource(ImageIconSource iconSource) {
+        this.iconSource = iconSource;
     }
 
     public void setAlphaTransparency(float alphaTransparency) {
@@ -143,12 +152,13 @@ public class ProgressLayeredPane extends JLayeredPane implements ProgressIndicat
 
     class ProgressPanel extends JPanel {
 
-        private AnimatedLabel animatedLabel = new AnimatedLabel("/progressAnimation/loading", ".gif", 18, 1, 200, 0, false, iconWidthAndHeight, iconWidthAndHeight);
+        private AnimatedLabel animatedLabel;
         private JProgressBar progressBar = new JProgressBar();
         private JLabel progressLabel = new JLabel();
         private final Color labelForeground = new Color(4,22,68,255);
 
         public ProgressPanel(String message) {
+            createAnimatedLabel();
             setOpaque(false);
             setBackground(Color.WHITE);
 
@@ -161,6 +171,18 @@ public class ProgressLayeredPane extends JLayeredPane implements ProgressIndicat
             //masked component in the layered pane
             MouseInputAdapter adapter = new MouseInputAdapter(){};
             addMouseListener(adapter);
+        }
+
+        private void createAnimatedLabel() {
+            if ( iconSource == null) {
+                iconSource = new RotatingImageSource(
+                    "/progressAnimation/loading1.gif",
+                    24,
+                    iconWidthAndHeight,
+                    iconWidthAndHeight
+                );
+            }
+            animatedLabel = new AnimatedLabel(iconSource, 200, 0, false);
         }
 
         private JComponent getComponentPanel(String message) {

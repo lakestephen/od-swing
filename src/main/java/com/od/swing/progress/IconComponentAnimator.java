@@ -26,7 +26,7 @@ import javax.swing.event.AncestorListener;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Arrays;
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -45,7 +45,7 @@ import java.util.Arrays;
  */
 public class IconComponentAnimator implements AncestorListener {
 
-    private ImageIcon[] icons;
+    private List<ImageIcon> icons;
     private int delayBetweenFrames;
     private int pauseBetween;
     private int currentIndex = 0;
@@ -55,33 +55,12 @@ public class IconComponentAnimator implements AncestorListener {
     private volatile boolean isAnimationOn;
     private final Object animationStateLock = new Object();
 
-    public IconComponentAnimator(IconComponent iconComponent, String imageResourcePrefix, String imageResourceSuffix,
-                          int numImages, int startIndex, int delayBetweenFrames, int pauseBetweenAnimations, boolean runOnce) {
-        this(iconComponent, imageResourcePrefix, imageResourceSuffix, numImages, startIndex, delayBetweenFrames, pauseBetweenAnimations, runOnce, -1, -1);
-    }
-
-    public IconComponentAnimator(String imageResourcePrefix, String imageResourceSuffix,
-                          int numImages, int startIndex, int delayBetweenFrames, int pauseBetweenAnimations, boolean runOnce, int iconWidth, int iconHeight) {
-        this(new IconComponentAdapter(), imageResourcePrefix, imageResourceSuffix, numImages, startIndex, delayBetweenFrames, pauseBetweenAnimations, runOnce, iconWidth, iconHeight);
-    }
-
-    public IconComponentAnimator(IconComponent iconComponent, String imageResourcePrefix, String imageResourceSuffix,
-                          int numImages, int startIndex, int delayBetweenFrames, int pauseBetweenAnimations, boolean runOnce, int iconWidth, int iconHeight) {
-
-        icons = new ImageIcon[numImages];
-        for (int i = 0; i < numImages; i++) {
-            icons[i] = getOrCreateImageIcon(imageResourcePrefix, imageResourceSuffix, startIndex, i, iconWidth, iconHeight);
-        }
+    public IconComponentAnimator(IconComponent iconComponent, ImageIconSource iconSource, int delayBetweenFrames, int pauseBetweenAnimations, boolean runOnce) {
+        this.icons = iconSource.getImageIcons();
         this.delayBetweenFrames = delayBetweenFrames;
         this.pauseBetween = pauseBetweenAnimations;
         this.runOnce = runOnce;
         setAnimatedComponent(iconComponent);
-    }
-
-    private ImageIcon getOrCreateImageIcon(String imageResourcePrefix, String imageResourceSuffix, int startIndex, int i, int width, int height) {
-        return width < 0 || height < 0 ?
-                ImageIconCache.getImageIcon(imageResourcePrefix + (i + startIndex) + imageResourceSuffix) :
-                ImageIconCache.getImageIcon(imageResourcePrefix + (i + startIndex) + imageResourceSuffix, width, height);
     }
 
     public void setAnimatedComponent(IconComponent component) {
@@ -89,7 +68,7 @@ public class IconComponentAnimator implements AncestorListener {
             iconComponent.removeAncestorListener(this);
         }
         iconComponent = component;
-        iconComponent.setIcon(icons[0]);
+        iconComponent.setIcon(icons.get(0));
         iconComponent.addAncestorListener(this);
     }
 
@@ -97,7 +76,7 @@ public class IconComponentAnimator implements AncestorListener {
      * To promote garbage collection client class can call this dispose method, if paranoid
      */
     public void disposeResources() {
-        Arrays.fill(icons, null);
+        icons.clear();
         iconComponent.removeAncestorListener(this);
     }
 
@@ -174,9 +153,9 @@ public class IconComponentAnimator implements AncestorListener {
             try {
                 while (isAnimationThreadOn) {
                     sleep(delayBetweenFrames);
-                    currentIndex = (currentIndex + 1) % icons.length;
-                    setIcon(icons[currentIndex]);
-                    if (currentIndex == icons.length - 1 && runOnce)
+                    currentIndex = (currentIndex + 1) % icons.size();
+                    setIcon(icons.get(currentIndex));
+                    if (currentIndex == icons.size() - 1 && runOnce)
                         isAnimationThreadOn = false;
                     if (currentIndex == 0)
                         sleep(pauseBetween);
@@ -192,7 +171,7 @@ public class IconComponentAnimator implements AncestorListener {
                         isAnimationOn = false;
                     }
                 }
-                setIcon(icons[0]);
+                setIcon(icons.get(0));
 
             }
             catch (InterruptedException ex) {
@@ -226,7 +205,7 @@ public class IconComponentAnimator implements AncestorListener {
     }
 
 
-    private static class IconComponentAdapter implements IconComponent {
+    public static class IconComponentAdapter implements IconComponent {
 
         public void setIcon(Icon i) {}
 
