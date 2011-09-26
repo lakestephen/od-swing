@@ -40,6 +40,8 @@ public class ProgressLayeredPane extends JLayeredPane implements ProgressIndicat
     private int iconWidthAndHeight;
     private int fontSize;
     private ImageIconSource iconSource;
+    private int delayBetweenFrames = 150;
+    private int pauseBetweenAnimations = 0;
 
     public ProgressLayeredPane() {
         this(null, DEFAULT_ALPHA_TRANSPARENCY);
@@ -73,6 +75,14 @@ public class ProgressLayeredPane extends JLayeredPane implements ProgressIndicat
      */
     public void setIconSource(ImageIconSource iconSource) {
         this.iconSource = iconSource;
+    }
+
+    public void setDelayBetweenFrames(int delayBetweenFrames) {
+        this.delayBetweenFrames = delayBetweenFrames;
+    }
+
+    public void setPauseBetweenAnimations(int pauseBetweenAnimations) {
+        this.pauseBetweenAnimations = pauseBetweenAnimations;
     }
 
     public void setAlphaTransparency(float alphaTransparency) {
@@ -182,7 +192,7 @@ public class ProgressLayeredPane extends JLayeredPane implements ProgressIndicat
                     iconWidthAndHeight
                 );
             }
-            animatedLabel = new AnimatedLabel(iconSource, 200, 0, false);
+            animatedLabel = new AnimatedLabel(iconSource, delayBetweenFrames, pauseBetweenAnimations, false);
         }
 
         private JComponent getComponentPanel(String message) {
