@@ -29,7 +29,7 @@ public class AnimatedLabelTestHarness {
                         );
 
 //                        RotatingImageSource i = new RotatingImageSource(
-//                            "/progressAnimation/loading1.gif",
+//                            "/progressAnimation/progress.png",
 //                            18,
 //                            IMAGE_SIZE,
 //                            IMAGE_SIZE

@@ -186,8 +186,8 @@ public class ProgressLayeredPane extends JLayeredPane implements ProgressIndicat
         private void createAnimatedLabel() {
             if ( iconSource == null) {
                 iconSource = new RotatingImageSource(
-                    "/progressAnimation/loading1.gif",
-                    24,
+                    "/progressAnimation/progress.png",
+                    16,
                     iconWidthAndHeight,
                     iconWidthAndHeight
                 );
