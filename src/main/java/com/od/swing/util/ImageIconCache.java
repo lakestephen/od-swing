@@ -37,7 +37,7 @@ public class ImageIconCache {
                 i = new ImageIcon(imageResource);
                 resourceToImageMap.put(resourcePath, i);
 
-                ImageKey imageKey = new ImageKey(i.getIconWidth(), i.getIconHeight(), resourcePath, 0);
+                ImageKey imageKey = new ImageKey(i.getIconWidth(), i.getIconHeight(), resourcePath, 0, 1f);
                 sizedImageMap.put(imageKey, i);
             }
         }
@@ -45,16 +45,16 @@ public class ImageIconCache {
     }
 
     public static ImageIcon getImageIcon(String resource, int width, int height) {
-        return getImageIcon(resource, width, height, 0);
+        return getImageIcon(resource, width, height, 0, 1f);
     }
 
     /**
      * Call this from the UI event thread only
      * @return an ImageIcon loaded from resourcePath scaled to width, height
      */
-    public static ImageIcon getImageIcon(String resource, int width, int height, double rotation) {
+    public static ImageIcon getImageIcon(String resource, int width, int height, double rotation, float alphaTransparency) {
         //use the temporary key for the lookup, rather than newing one up each time, to avoid object cycling
-        ImageIcon i = sizedImageMap.get(ImageKey.getTemporaryKey(width, height, resource, rotation));
+        ImageIcon i = sizedImageMap.get(ImageKey.getTemporaryKey(width, height, resource, rotation, alphaTransparency));
 
         if ( i == null ) {
             ImageIcon defaultSizedImage = getImageIcon(resource);
@@ -73,12 +73,12 @@ public class ImageIconCache {
                 g2d.drawImage(defaultSizedImage.getImage(), 0, 0, null);
 
                 BufferedImage i2 = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-                RescaleOp rescaleOp = new RescaleOp(new float[] {1f, 1f, 1f, 0.5f}, new float[4], null);
+                RescaleOp rescaleOp = new RescaleOp(new float[] {1f, 1f, 1f, alphaTransparency}, new float[4], null);
                 g2d =  (Graphics2D)i2.getGraphics();
                 g2d.drawImage(bi, rescaleOp, 0, 0);
 
                 i = new ImageIcon(i2);
-                sizedImageMap.put(new ImageKey(width, height, resource, rotation), i);
+                sizedImageMap.put(new ImageKey(width, height, resource, rotation, alphaTransparency), i);
             }
         }
         return i;
@@ -88,28 +88,30 @@ public class ImageIconCache {
 
         private static ImageKey temporaryKey = new ImageKey();
 
-        int width, height;
-        String resourceUrl;
+        private int width, height;
+        private String resourceUrl;
         private double rotation;
+        private float alphaTransparency;
 
         private ImageKey() {
         }
 
-        private ImageKey(int width, int height, String resourceUrl, double rotation) {
+        private ImageKey(int width, int height, String resourceUrl, double rotation, float alphaTransparency) {
             this.width = width;
             this.height = height;
             this.resourceUrl = resourceUrl;
             this.rotation = rotation;
+            this.alphaTransparency = alphaTransparency;
         }
 
-        public static ImageKey getTemporaryKey(int width, int height, String resourceUrl, double rotation) {
+        public static ImageKey getTemporaryKey(int width, int height, String resourceUrl, double rotation, float alphaTransparency) {
             temporaryKey.width = width;
             temporaryKey.height = height;
             temporaryKey.resourceUrl = resourceUrl;
             temporaryKey.rotation = rotation;
+            temporaryKey.alphaTransparency = alphaTransparency;
             return temporaryKey;
         }
-
 
         @Override
         public boolean equals(Object o) {
@@ -118,6 +120,7 @@ public class ImageIconCache {
 
             ImageKey imageKey = (ImageKey) o;
 
+            if (Float.compare(imageKey.alphaTransparency, alphaTransparency) != 0) return false;
             if (height != imageKey.height) return false;
             if (Double.compare(imageKey.rotation, rotation) != 0) return false;
             if (width != imageKey.width) return false;
@@ -136,6 +139,7 @@ public class ImageIconCache {
             result = 31 * result + (resourceUrl != null ? resourceUrl.hashCode() : 0);
             temp = rotation != +0.0d ? Double.doubleToLongBits(rotation) : 0L;
             result = 31 * result + (int) (temp ^ (temp >>> 32));
+            result = 31 * result + (alphaTransparency != +0.0f ? Float.floatToIntBits(alphaTransparency) : 0);
             return result;
         }
     }
