@@ -6,6 +6,7 @@ import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.awt.image.ImageObserver;
+import java.awt.image.RescaleOp;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
@@ -58,7 +59,7 @@ public class ImageIconCache {
         if ( i == null ) {
             ImageIcon defaultSizedImage = getImageIcon(resource);
             if ( defaultSizedImage != null ) {
-                BufferedImage bi = new BufferedImage(width, height, BufferedImage.TYPE_4BYTE_ABGR);
+                BufferedImage bi = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
                 Graphics2D g2d = (Graphics2D)bi.getGraphics();
                 AffineTransform at = g2d.getTransform();
                 double xScale = 1 / (((double) defaultSizedImage.getIconWidth()) / width);
@@ -67,8 +68,16 @@ public class ImageIconCache {
                 at.rotate(rotation, width / 2, height / 2);
                 at.scale(xScale, yScale);
                 g2d.setTransform(at);
+
+
                 g2d.drawImage(defaultSizedImage.getImage(), 0, 0, null);
-                i = new ImageIcon(bi);
+
+                BufferedImage i2 = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+                RescaleOp rescaleOp = new RescaleOp(new float[] {1f, 1f, 1f, 0.5f}, new float[4], null);
+                g2d =  (Graphics2D)i2.getGraphics();
+                g2d.drawImage(bi, rescaleOp, 0, 0);
+
+                i = new ImageIcon(i2);
                 sizedImageMap.put(new ImageKey(width, height, resource, rotation), i);
             }
         }
