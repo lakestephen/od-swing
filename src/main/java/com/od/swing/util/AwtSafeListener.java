@@ -11,6 +11,8 @@ import java.lang.reflect.Proxy;
  * Date: 17/12/10
  * Time: 16:21
  *
+ * Utility to propagate events safely on the swing thread
+ * n.b. this requires events to be immutable, or inconsistent state problems may occur if events are subsequently altered
  */
 public class AwtSafeListener {
 
