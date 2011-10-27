@@ -34,6 +34,8 @@ import java.util.ArrayList;
 public class ProgressLayeredPane extends JLayeredPane implements ProgressIndicator {
 
     private static final float DEFAULT_ALPHA_TRANSPARENCY = 0.9f;
+    private static final int DEFAULT_ICON_WIDTH_AND_HEIGHT = 100;
+
     private ProgressPanel progressPanel;
     private Component viewComponent;
     private float alphaTransparency;
@@ -56,7 +58,7 @@ public class ProgressLayeredPane extends JLayeredPane implements ProgressIndicat
     }
 
     public ProgressLayeredPane(Component viewComponent, float alphaTransparency) {
-        this(viewComponent, alphaTransparency, -1, 12);
+        this(viewComponent, alphaTransparency, DEFAULT_ICON_WIDTH_AND_HEIGHT, 12);
     }
 
     public ProgressLayeredPane(Component viewComponent, float alphaTransparency, int iconWidthAndHeight, int fontSize) {
@@ -205,7 +207,7 @@ public class ProgressLayeredPane extends JLayeredPane implements ProgressIndicat
                 Math.min(300, viewComponent.getSize().width - 30),
                 Math.min(40, viewComponent.getSize().height - 10))
             );
-            progressBar.setForeground(new Color(193,234,250,100));
+            progressBar.setForeground(new Color(193,234,250, DEFAULT_ICON_WIDTH_AND_HEIGHT));
 
             progressLabel.setVisible(false);
             progressLabel.setForeground(labelForeground);
