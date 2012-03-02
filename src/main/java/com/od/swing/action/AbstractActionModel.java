@@ -26,7 +26,7 @@ import java.util.List;
  *         <p/>
  *         Superclass for action models
  */
-public abstract class AbstractActionModel {
+public abstract class AbstractActionModel implements ActionModel {
 
     private boolean modelIsValid;
 
@@ -56,20 +56,24 @@ public abstract class AbstractActionModel {
     public synchronized void clearActionModelState() {
         doClearActionModelState();
         setModelValid(false);
+        fireActionStateUpdated();
     }
 
     /**
      * Set whether actions based on this model should be enabled
-     * Triggers an event to the Actions which are listners on this model, the actions may
+     * If this state is changed, fireActionStateUpdated should also be called
+     *
+     * Triggers an event to the Actions which are listeners on this model, the actions may
      * implement other logic to determine whether the action is 'actionable' and enabled,
      * even if the model is valid, so the event needs to get fired even if the validity
      * of the model hasn't changed
      *
-     * @param valid
+     * @return true, if model state was changed bu this call
      */
-    protected synchronized void setModelValid(boolean valid) {
+    protected synchronized boolean setModelValid(boolean valid) {
+        boolean result = modelIsValid != valid;
         modelIsValid = valid;
-        fireActionStateUpdated();
+        return result;
     }
 
     /**

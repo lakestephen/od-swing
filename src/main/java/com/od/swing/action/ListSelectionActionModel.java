@@ -39,26 +39,31 @@ public class ListSelectionActionModel<E> extends AbstractActionModel {
         selectedAsList = Collections.unmodifiableList(series);
         selectedSeries.clear();
         selectedSeries.addAll(series);
-        setValidity();
+        setValidityAndFireStateChange();
     }
 
     public void addSelected(E series) {
         selectedAsList = null;
         selectedSeries.add(series);
-        setValidity();
+        setValidityAndFireStateChange();
     }
 
     public void removeSelected(E series) {
         selectedAsList = null;
         selectedSeries.remove(series);
-        setValidity();
+        setValidityAndFireStateChange();
     }
 
     public void setSelected(E series){
         selectedAsList = null;
         selectedSeries.clear();
         selectedSeries.add(series);
+        setValidityAndFireStateChange();
+    }
+
+    private void setValidityAndFireStateChange() {
         setValidity();
+        fireActionStateUpdated();
     }
 
     public List<E> getSelected() {
@@ -79,5 +84,9 @@ public class ListSelectionActionModel<E> extends AbstractActionModel {
     protected void doClearActionModelState() {
         selectedAsList = null;
         selectedSeries.clear();
+    }
+
+    public int getSelectionCount() {
+        return selectedSeries.size();
     }
 }

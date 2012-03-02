@@ -25,7 +25,7 @@ import javax.swing.*;
 /**
  * @author EbbuttN
  */
-public abstract class ModelDrivenAction<E extends AbstractActionModel> extends AbstractAction implements ActionModelListener {
+public abstract class ModelDrivenAction<E extends ActionModel> extends AbstractAction implements ActionModelListener {
 
     private E actionModel;
     private WeakReferenceListener weakReferenceListener;
@@ -43,7 +43,7 @@ public abstract class ModelDrivenAction<E extends AbstractActionModel> extends A
         this.actionModel = actionModel;
         weakReferenceListener = new WeakReferenceListener(this);
         weakReferenceListener.addListenerTo(actionModel);
-        setEnabled(false);
+        setEnabled(actionModel.isModelValid());
     }
 
     protected void finalize() throws Throwable {
