@@ -44,6 +44,9 @@ public class ProgressLayeredPane extends JLayeredPane implements ProgressIndicat
     private ImageIconSource iconSource;
     private int delayBetweenFrames = 150;
     private int pauseBetweenAnimations = 0;
+    private Color progressPaneBackgroundColor = Color.WHITE;
+    private Color progressPaneLabelColor = new Color(4,22,68,255);
+
 
     public ProgressLayeredPane() {
         this(null, DEFAULT_ALPHA_TRANSPARENCY);
@@ -98,6 +101,14 @@ public class ProgressLayeredPane extends JLayeredPane implements ProgressIndicat
         this.viewComponent = viewComponent;
         add(viewComponent, JLayeredPane.DEFAULT_LAYER);
         revalidate();
+    }
+
+    public void setProgressPaneBackgroundColor(Color progressPaneBackgroundColor) {
+        this.progressPaneBackgroundColor = progressPaneBackgroundColor;
+    }
+
+    public void setProgressPaneLabelColor(Color progressPaneLabelColor) {
+        this.progressPaneLabelColor = progressPaneLabelColor;
     }
 
     /**
@@ -167,12 +178,11 @@ public class ProgressLayeredPane extends JLayeredPane implements ProgressIndicat
         private AnimatedLabel animatedLabel;
         private JProgressBar progressBar = new JProgressBar();
         private JLabel progressLabel = new JLabel();
-        private final Color labelForeground = new Color(4,22,68,255);
 
         public ProgressPanel(String message) {
             createAnimatedLabel();
             setOpaque(false);
-            setBackground(Color.WHITE);
+            //setBackground(Color.WHITE);
 
             setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
             add(Box.createVerticalGlue());
@@ -200,7 +210,7 @@ public class ProgressLayeredPane extends JLayeredPane implements ProgressIndicat
         private JComponent getComponentPanel(String message) {
             JLabel messageLabel = new JLabel(message);
             messageLabel.setFont(messageLabel.getFont().deriveFont((float)fontSize));
-            messageLabel.setForeground(labelForeground);
+            messageLabel.setForeground(progressPaneLabelColor);
 
             progressBar.setVisible(false);
             progressBar.setSize(new Dimension(
@@ -210,7 +220,7 @@ public class ProgressLayeredPane extends JLayeredPane implements ProgressIndicat
             progressBar.setForeground(new Color(193,234,250, DEFAULT_ICON_WIDTH_AND_HEIGHT));
 
             progressLabel.setVisible(false);
-            progressLabel.setForeground(labelForeground);
+            progressLabel.setForeground(progressPaneLabelColor);
 
             Box componentPanel = Box.createVerticalBox();
             componentPanel.setOpaque(false);
@@ -257,7 +267,7 @@ public class ProgressLayeredPane extends JLayeredPane implements ProgressIndicat
             Graphics2D g2 = (Graphics2D)g.create();
             Composite alphaComp = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alphaTransparency);
             g2.setComposite(alphaComp);
-            g2.setPaint(Color.WHITE);
+            g2.setPaint(progressPaneBackgroundColor);
             g2.fillRect(0, 0, this.getWidth(), this.getHeight());
             g2.dispose();
         }
