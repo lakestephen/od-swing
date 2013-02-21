@@ -4,7 +4,7 @@
 	<groupId>od</groupId>
 	<artifactId>od-swing</artifactId>
 	<name>od-swing</name>
-    <version>1.0.13</version>
+    <version>1.0.14</version>
 	<description>OD Swing Utilities</description>
 	<packaging>jar</packaging>
     <build>
